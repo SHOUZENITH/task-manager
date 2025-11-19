@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { supabase } from "@/lib/supabase"; // Import the connection we just made
+import { supabase } from "@/lib/supabase";
 
+// GET: Get all tasks
 export async function GET() {
   const { data, error } = await supabase
     .from('tasks')
@@ -11,22 +12,52 @@ export async function GET() {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  // Return the real data
   return NextResponse.json(data);
 }
 
+// POST: Create a new task (Default status: 'todo')
 export async function POST(request: Request) {
   const body = await request.json();
 
-  // Insert a new task into Supabase
   const { data, error } = await supabase
     .from('tasks')
-    .insert([{ title: body.title }])
+    .insert([{ 
+      title: body.title, 
+      status: 'todo', 
+      priority: 'medium' 
+    }])
     .select();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
+// PATCH: Move task to a different column
+export async function PATCH(request: Request) {
+  const body = await request.json();
+
+  const { data, error } = await supabase
+    .from('tasks')
+    .update({ status: body.status }) 
+    .eq('id', body.id)
+    .select();
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json(data);
+}
+
+// DELETE: Delete a task
+export async function DELETE(request: Request) {
+  const body = await request.json();
+
+  const { error } = await supabase
+    .from('tasks')
+    .delete()
+    .eq('id', body.id);
 
   if (error) {
     return NextResponse.json({ error: error.message }, { status: 500 });
   }
 
-  return NextResponse.json(data);
+  return NextResponse.json({ message: "Deleted successfully" });
 }
