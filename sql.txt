@@ -10,3 +10,7 @@ INSERT INTO tasks (title, status, priority) VALUES
   ('Design Mockups', 'todo', 'high'),
   ('Build API', 'in-progress', 'high'),
   ('Test App', 'done', 'medium');
+
+.env.local
+NEXT_PUBLIC_SUPABASE_URL=https://vahifdjsrdakqtbjwawj.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_LS5NSl3T8P5aUw5fhfT7Qw_fHpZg17u
